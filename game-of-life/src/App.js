@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import produce from 'immer'
 import './App.css';
 
+// operations to cell neighbors
 const operations = [
   [-1, -1],
   [-1, 0],

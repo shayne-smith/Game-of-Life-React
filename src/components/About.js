@@ -9,7 +9,7 @@ const About = () => {
                 <h1>About Conway's Game of Life</h1>
                 <h2>Overview</h2>
 
-                <h3>The Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves. It is Turing complete and can simulate a universal constructor or any other Turing machine. [source: Wikipedia]</h3>
+                <h3>The Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves. It is Turing complete and can simulate a universal constructor or any other Turing machine. [Source: Wikipedia]</h3>
                 
                 <div class='rules'>
                     <h2>Rules</h2>

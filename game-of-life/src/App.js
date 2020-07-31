@@ -1,6 +1,11 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import produce from 'immer'
+import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
+import produce from 'immer';
 import './css/App.css';
+
+import About from './components/About';
+import Buttons from './components/Buttons';
+import Grid from './components/Grid';
 
 // operations to cell neighbors
 const operations = [
@@ -17,16 +22,18 @@ const operations = [
 ]
 
 const initialFormValues = {
-  numRows: 25,
-  numCols: 25
+  numRows: 30,
+  numCols: 30,
+  delay: 80,
 }
 
 function App() {
   const [running, setRunning] = useState(false);
   const [generations, setGenerations] = useState(0);
   const [formValues, setFormValues] = useState(initialFormValues)
-  const [numRows, setNumRows] = useState(25);
-  const [numCols, setNumCols] = useState(25);
+  const [numRows, setNumRows] = useState(30);
+  const [numCols, setNumCols] = useState(30);
+  const [delay, setDelay] = useState(80);
   const [grid, setGrid] = useState(() => {
     const rows = [];
     for (let i = 0; i < numRows; i++) {
@@ -58,6 +65,15 @@ function App() {
       }
   
       return rows;
+  }
+
+  const onUpdateDelay = evt => {
+    evt.preventDefault()
+    
+    const newDelay = formValues.delay
+
+    setDelay(parseInt(newDelay))
+    setFormValues(initialFormValues)
   }
 
   const onUpdateRowSize = evt => {
@@ -127,103 +143,45 @@ function App() {
       });     
     });
 
-    setTimeout(runSimulation, 100);
+    setTimeout(runSimulation, delay);
   }, [numRows, numCols])
 
   return (
     <div class='container'>
-      <div class='buttons'>
-        <div class='title'>
-          <h1>Conway's Game of Life</h1>
-          <h2>Author: Shayne Smith</h2>
-        </div>
-        <div class='actions'>
-          <button
-            onClick={() => {
-              setRunning(!running);
-              if (!running) {
-                runningRef.current = true; // prevents race condition between state update and running simulation
-                runSimulation();
-              } 
-            }}
-          >{running ? 'Stop' : 'Start'}
-          </button>
-          <button onClick={() => {
-            const rows = [];
-            for (let i = 0; i < numRows; i++) {
-              rows.push(Array.from(Array(numCols), () => Math.random() > 0.5 ? 1 : 0))
-            }
-        
-            setGrid(rows);
-          }}>
-            Random
-          </button>
-          <button onClick={() => {
-            setGrid(generateEmptyGrid(numRows, numCols));
-            setGenerations(0)
-          }}>
-            Clear
-          </button>
-        </div>
+      <Router>
+        <Switch>
+          <Route exact path='/'>
+            <Buttons 
+              running={running} 
+              setRunning={setRunning}
+              runningRef={runningRef} 
+              runSimulation={runSimulation}
+              numRows={numRows}
+              numCols={numCols}
+              setGrid={setGrid}
+              generateEmptyGrid={generateEmptyGrid}
+              setGenerations={setGenerations}
+              formValues={formValues}
+              onInputChange={onInputChange}
+              onUpdateDelay={onUpdateDelay}
+              onUpdateRowSize={onUpdateRowSize}
+              onUpdateColSize={onUpdateColSize}
+            />
+            <Grid 
+              grid={grid}
+              numCols={numCols}
+              running={running}
+              setGrid={setGrid}
+              generations={generations}
+            />
+          </Route>
+          <Route exact path='/about'>
+            <About />
+          </Route>
+        </Switch>
+      
+      </Router>
 
-
-        <div class='settings'>
-            <label>Number of Rows:&nbsp;
-                <input    
-                    value={formValues.numRows}
-                    onChange={onInputChange}
-                    name='numRows'
-                    type='number'
-                />
-            </label>
-            <button
-              onClick={onUpdateRowSize}
-            >
-              Update Row Count
-            </button>
-            <label>Number of Columns:&nbsp;
-                <input    
-                    value={formValues.numCols}
-                    onChange={onInputChange}
-                    name='numCols'
-                    type='number'
-                />
-            </label>
-            <button
-              onClick={onUpdateColSize}
-            >
-              Update Column Count
-            </button>
-          </div>
-        </div>
-      <div class='gameGrid'>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${numCols}, 20px)`
-          }}>
-            {grid.map((rows, i) => 
-              rows.map((col, j) => (
-              <div 
-              key={`${i}-${j}`}
-              onClick={() => {
-                const newGrid = produce(grid, gridCopy => {
-                  if (!running) {
-                    gridCopy[i][j] = grid[i][j] ? 0 : 1;
-                  }
-                })
-                setGrid(newGrid)
-              }}
-                style={{ 
-                  width: 20, 
-                  height: 20, 
-                  backgroundColor: grid[i][j] ? '#F194B4' : undefined,
-                  border: "solid 1px black"
-              }} />)))}
-          </div>
-          <div id='generationNum'>
-            {'Generation Number: ' + generations}
-          </div>
-        </div>
       </div>
   );
 }

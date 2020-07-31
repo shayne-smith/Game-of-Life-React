@@ -67,6 +67,7 @@ function App() {
       return rows;
   }
 
+  // Updates delay state
   const onUpdateDelay = evt => {
     evt.preventDefault()
     
@@ -76,6 +77,7 @@ function App() {
     setFormValues(initialFormValues)
   }
 
+  // Updates row state
   const onUpdateRowSize = evt => {
     evt.preventDefault()
     
@@ -85,6 +87,7 @@ function App() {
     setFormValues(initialFormValues)
   }
 
+  // Updates column state
   const onUpdateColSize = evt => {
     evt.preventDefault()
     

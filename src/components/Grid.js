@@ -1,6 +1,7 @@
 import React from 'react';
 import produce from 'immer';
 
+// Game of Life Grid Component
 const Grid = 
     ({grid,
     numCols,

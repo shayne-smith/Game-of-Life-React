@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
+// About Game of Life Component
 const About = () => {
     return (
         <div class='about-container'>

@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import produce from 'immer'
-import './App.css';
+import './css/App.css';
 
+// operations to cell neighbors
 const operations = [
   [-1, -1],
   [-1, 0],
@@ -130,86 +131,100 @@ function App() {
   }, [numRows, numCols])
 
   return (
-    <>
-      <button
-        onClick={() => {
-          setRunning(!running);
-          if (!running) {
-            runningRef.current = true; // prevents race condition between state update and running simulation
-            runSimulation();
-          } 
-        }}
-      >{running ? 'Stop' : 'Start'}
-      </button>
-      <button onClick={() => {
-        const rows = [];
-        for (let i = 0; i < numRows; i++) {
-          rows.push(Array.from(Array(numCols), () => Math.random() > 0.5 ? 1 : 0))
-        }
-    
-        setGrid(rows);
-      }}>
-        Random
-      </button>
-      <button onClick={() => {
-        setGrid(generateEmptyGrid(numRows, numCols));
-        setGenerations(0)
-      }}>
-        Clear
-      </button>
-      <label>Number of Rows:&nbsp;
-          <input    
-              value={formValues.numRows}
-              onChange={onInputChange}
-              name='numRows'
-              type='number'
-          />
-      </label>
-      <button
-        onClick={onUpdateRowSize}
-      >
-        Update Row Count
-      </button>
-      <label>Number of Columns:&nbsp;
-          <input    
-              value={formValues.numCols}
-              onChange={onInputChange}
-              name='numCols'
-              type='number'
-          />
-      </label>
-      <button
-        onClick={onUpdateColSize}
-      >
-        Update Column Count
-      </button>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${numCols}, 20px)`
-      }}>
-        {grid.map((rows, i) => 
-          rows.map((col, j) => (
-          <div 
-          key={`${i}-${j}`}
-          onClick={() => {
-            const newGrid = produce(grid, gridCopy => {
+    <div class='container'>
+      <div class='buttons'>
+        <div class='title'>
+          <h1>Conway's Game of Life</h1>
+          <h2>Author: Shayne Smith</h2>
+        </div>
+        <div class='actions'>
+          <button
+            onClick={() => {
+              setRunning(!running);
               if (!running) {
-                gridCopy[i][j] = grid[i][j] ? 0 : 1;
-              }
-            })
-            setGrid(newGrid)
-          }}
-            style={{ 
-              width: 20, 
-              height: 20, 
-              backgroundColor: grid[i][j] ? 'cyan' : undefined,
-              border: "solid 1px black"
-          }} />)))}
+                runningRef.current = true; // prevents race condition between state update and running simulation
+                runSimulation();
+              } 
+            }}
+          >{running ? 'Stop' : 'Start'}
+          </button>
+          <button onClick={() => {
+            const rows = [];
+            for (let i = 0; i < numRows; i++) {
+              rows.push(Array.from(Array(numCols), () => Math.random() > 0.5 ? 1 : 0))
+            }
+        
+            setGrid(rows);
+          }}>
+            Random
+          </button>
+          <button onClick={() => {
+            setGrid(generateEmptyGrid(numRows, numCols));
+            setGenerations(0)
+          }}>
+            Clear
+          </button>
+        </div>
+
+
+        <div class='settings'>
+            <label>Number of Rows:&nbsp;
+                <input    
+                    value={formValues.numRows}
+                    onChange={onInputChange}
+                    name='numRows'
+                    type='number'
+                />
+            </label>
+            <button
+              onClick={onUpdateRowSize}
+            >
+              Update Row Count
+            </button>
+            <label>Number of Columns:&nbsp;
+                <input    
+                    value={formValues.numCols}
+                    onChange={onInputChange}
+                    name='numCols'
+                    type='number'
+                />
+            </label>
+            <button
+              onClick={onUpdateColSize}
+            >
+              Update Column Count
+            </button>
+          </div>
+        </div>
+      <div class='gameGrid'>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${numCols}, 20px)`
+          }}>
+            {grid.map((rows, i) => 
+              rows.map((col, j) => (
+              <div 
+              key={`${i}-${j}`}
+              onClick={() => {
+                const newGrid = produce(grid, gridCopy => {
+                  if (!running) {
+                    gridCopy[i][j] = grid[i][j] ? 0 : 1;
+                  }
+                })
+                setGrid(newGrid)
+              }}
+                style={{ 
+                  width: 20, 
+                  height: 20, 
+                  backgroundColor: grid[i][j] ? '#F194B4' : undefined,
+                  border: "solid 1px black"
+              }} />)))}
+          </div>
+          <div id='generationNum'>
+            {'Generation Number: ' + generations}
+          </div>
+        </div>
       </div>
-      <div>
-        {'Generation Number: ' + generations}
-      </div>
-    </>
   );
 }
 

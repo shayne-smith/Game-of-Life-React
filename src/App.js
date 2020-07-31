@@ -57,6 +57,7 @@ function App() {
     })
   }
 
+  // Generates an empty grid
   const generateEmptyGrid = (numRows, numCols) => {
     setRunning(false)
     const rows = [];
